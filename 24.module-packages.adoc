@@ -55,7 +55,7 @@ say friendly-greeting;  # OUTPUT: «Greetings, friend!»
 
 ==== 文件和模块命名
 
-我们通常希望 `.pm6` 文件提供*单个*模块，仅此而已。这里的常见约定是文件 basename 与模块名称匹配。回到 `Foo.pm6`，显而易见的是，它仅提供单个模块，`M`; 在这种情况下，我们可能想要重命名 `M` 为 `Foo`。修改后的文件将为：
+我们通常希望 `.pm6` 文件只提供*一个*模块。常见约定是文件的主文件名与模块名称相同。回到 `Foo.pm6`，显而易见，它仅提供一个模块`M`; 在这种情况下，我们可能想要重命名 `M` 为 `Foo`。修改后的文件会是这样：
 
 ```perl6
 module Foo {
@@ -73,11 +73,11 @@ say Foo::loud-greeting;  # OUTPUT: «GREETINGS, CAMELIA!»
 say friendly-greeting;   # OUTPUT: «Greetings, friend!» 
 ```
 
-如果 `Foo.pm6` 在源树中放置得更深，例如在 `lib/Utils/Foo.pm6` 中，我们可以选择命名模块 `Utils::Foo` 以保持一致性。
+如果 `Foo.pm6` 在源文件目录树中放置得更深，例如在 `lib/Utils/Foo.pm6` 中，我们可以选择命名模块为 `Utils::Foo` 以保持一致。
 
 ===== `unit` 关键字
 
-只提供单个模块的文件可以用 `unit` 关键字更简洁地编写; `unit module` 指定编译单元的其余部分是声明的模块的一部分。这里 `Foo.pm6` 使用 `unit` 重写：
+只提供单个模块的文件可以用 `unit` 关键字更简洁地编写; `unit module` 指定编译单元的其余部分是其声明的模块的一部分。这里 `Foo.pm6` 使用 `unit` 重写：
 
 ```perl6
 unit module Foo;
@@ -87,7 +87,7 @@ our sub loud-greeting (--> Str)  { greeting().uc       }
 sub friendly-greeting is export  { greeting('friend')  }
 ```
 
-单元声明后的所有内容都是 `Foo` 模块规范的一部分。
+`unit`声明后的所有内容都是 `Foo` 模块规范的一部分。
 
 （请注意，`unit` 也可以用于 `class`，`grammar` 和 `role`）。
 
@@ -117,7 +117,7 @@ say loud-greeting;       # OUTPUT: «GREETINGS FROM BAR, CAMELIA!»
 say friendly-greeting;   # OUTPUT: «Greetings from Bar, friend!» 
 ```
 
-注意 `loud-greeting` 的使用，而不是 `Bar::loud-greeting` 因为 `Bar` 不是已知符号（我们没有在 `Bar.pm6` 中创建一个以那个名字命名的 `module`）。但是为什么 `loud-greeting`是可调用的, 即使我们没有将其标记为导出。答案很简单，`Bar.pm6` 不创建一个新的包命名空间 - `$?PACKAGE` 仍设置为 `GLOBAL` 当我们将 `loud-greeting`声明为 `our` 时，它被注册到 `GLOBAL` 符号表中。
+注意 `loud-greeting` 的使用，不是 `Bar::loud-greeting` 因为 `Bar` 不是已知符号（我们没有在 `Bar.pm6` 中创建一个以`Bar`为名的 `module`）。但是为什么 `loud-greeting`是可调用的, 即使我们没有将其标记为导出？答案很简单，`Bar.pm6` 不创建一个新的包命名空间 - `$?PACKAGE` 仍设置为 `GLOBAL`（全局）当我们将 `loud-greeting`声明为 `our` 时，它被注册到 `GLOBAL` 符号表中。
 
 ===== 词法别名和安全
 
@@ -127,7 +127,7 @@ say friendly-greeting;   # OUTPUT: «Greetings from Bar, friend!»
 our sub say ($ignored) { print "oh dear\n" }
 ```
 
-这会创建一个词法别名，将内置 `say` 隐藏在 `Bar.pm6` *内部* 但保持调用者 `say` 不变。因此，以下 `say` 调用仍然按预期工作：
+这会创建一个词法别名，将内置 `say` 隐藏在 `Bar.pm6` *内部* 而保持调用者的 `say` 不变。因此，以下 `say` 调用仍然按预期工作：
 
 ```perl6
 use Bar;
